@@ -6,6 +6,7 @@ import { colors, spacingY } from '@/constants/theme';
 import { verticalScale } from '@/utils/styling';
 import * as Icons from 'phosphor-react-native';
 
+
 export default function CustomTabs({ state, descriptors, navigation }:BottomTabBarProps) {
   // const { colors } = useTheme();
   // const { buildHref } = useLinkBuilder();
@@ -17,8 +18,8 @@ const tabBarIcons: any = {
       weight={isFocused ? 'fill' : 'regular'} 
       color={isFocused ? colors.primary : colors.neutral400} />
   ),
-  statisctics:(isFocused: boolean) => (
-    <Icons.ChartBar
+  statistics:(isFocused: boolean) => (
+    <Icons.ChartLineUp
       size={verticalScale(25)} 
       weight={isFocused ? 'fill' : 'regular'} 
       color={isFocused ? colors.primary : colors.neutral400} />
@@ -30,7 +31,7 @@ const tabBarIcons: any = {
       color={isFocused ? colors.primary : colors.neutral400} />
   ),
   profile:(isFocused: boolean) => (
-    <Icons.Person
+    <Icons.User
       size={verticalScale(25)} 
       weight={isFocused ? 'fill' : 'regular'} 
       color={isFocused ? colors.primary : colors.neutral400} />

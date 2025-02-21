@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error: any) {
       let message = error.message;
       console.log('error message', message)
-      if(message.includes('(auth/invalid-credentials)') ) message = 'Invalid credentials')
+      if(message.includes('(auth/invalid-credentials)')) message = 'Invalid credentials'
       return { success: false, msg: message };
     }
   };

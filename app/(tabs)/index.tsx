@@ -8,16 +8,11 @@ import { colors } from '@/constants/theme';
 import ScreenWrapper from '@/components/ScreenWrapper';
 
 const Home = () => {
-  const handleLogOut = async () =>{
-    await signOut(auth);
-  }
+
   return (
 
     <ScreenWrapper>
-      <View>
-        <Button onPress={handleLogOut}>
-          <Typo color={colors.black}>Logout</Typo>
-        </Button>
+      <View> 
       </View>
     </ScreenWrapper>
     )

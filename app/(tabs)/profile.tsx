@@ -60,7 +60,7 @@ const Profile = () => {
         />
       ),
       routeName:'/(modals)/profileModal',
-      bgColor:'#636f1'
+      bgColor:'#059669'
     },
     // {
     //   title:"Settings",
@@ -77,26 +77,26 @@ const Profile = () => {
     {
       title:"Pricacy Policy",
       icon: (
-        <Icons.User
+        <Icons.Lock
           size={26}
           color={colors.white}
           weight='fill'
         />
       ),
-      routeName:'/(modals)/ptofileModal',
+      routeName:'/(modals)/profileModal',
       bgColor:'#6366f1'
     },
     {
       title:"Logout",
       icon: (
-        <Icons.User
+        <Icons.SignOut
           size={26}
           color={colors.white}
           weight='fill'
         />
       ),
       // routeName:'/(modals)/ptofileModal',
-      bgColor:'#069669'
+      bgColor:'#960606'
     }
   ]
   

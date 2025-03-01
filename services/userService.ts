@@ -28,3 +28,4 @@ export const updateUser = async (
     return{success:false, msg:error.message}
   }
 }
+ 

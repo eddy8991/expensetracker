@@ -10,6 +10,7 @@ export const uploadToCloudinary = async (
 
 ): Promise<ResponseType> => {
   try{
+    if(!file) return {success:true, data:null, }
     if(typeof file == 'string'){
       return {success:true, data:file}
     }
@@ -28,7 +29,7 @@ export const uploadToCloudinary = async (
           "Content-Type":"multipart/form-data"
         }
       })
-      return{success:true, msg:'updated successfully'}
+      return{success:true, data:response?.data?.secure_url, msg:'updated successfully'}
     }
     return {success:true, msg:"Image uploaded successfully"}
   }catch(error:any){
@@ -41,4 +42,10 @@ export const getProfileImage = (file:any) =>{
   if(file && typeof file == 'object') return file.uri
 
   return require('../assets/images/defaultAvatar.png')
+}
+export const getFilePath = (file:any) =>{
+  if(file && typeof file == 'string') return file
+  if(file && typeof file == 'object') return file.uri
+
+  return null;
 }

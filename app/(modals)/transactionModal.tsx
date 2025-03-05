@@ -30,6 +30,7 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import Input from "@/components/Input";
+import { createOrUpdateTransaction } from "@/services/transactionService";
 
 const transactionModal = () => {
   const router = useRouter();
@@ -59,20 +60,37 @@ const transactionModal = () => {
     useLocalSearchParams();
 
   const onDateChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate || transaction.date; 
+    const currentDate = selectedDate || transaction.date;
     setTransaction({ ...transaction, date: currentDate });
     setShowDatePicker(Platform.OS == "ios" ? true : false);
   };
 
   const onSubmit = async () => {
-      const {type,amount, description, category, date, walletId, image} = transaction;
-      if(!walletId || !date || !amount || (type == "expense" && !category)){
-        Alert.alert('Please fill all the fields')
-        return;
-      }
-      let transactionData:TransactionType = {
-        type,amount,description,category,date,walletId,image,uid:user?.uid
-      }
+    const { type, amount, description, category, date, walletId, image } =
+      transaction;
+    if (!walletId || !date || !amount || (type == "expense" && !category)) {
+      Alert.alert("Please fill all the fields");
+      return;
+    }
+    let transactionData: TransactionType = {
+      type,
+      amount,
+      description,
+      category,
+      date,
+      walletId,
+      image,
+      uid: user?.uid,
+    };
+    console.log('TRANSACTION DATA', transactionData);
+    setLoading(true);
+    const res = await createOrUpdateTransaction(transactionData);
+    setLoading(false);
+    if (res.success) {
+      router.back();
+    } else {
+      Alert.alert("Update Failed", res.msg);
+    }
   };
   const onDelete = async () => {
     if (!oldTransaction?.id) return;
@@ -106,17 +124,6 @@ const transactionModal = () => {
       ]
     );
   };
-
-  const data = [
-    { label: "Item 1", value: "1" },
-    { label: "Item 2", value: "2" },
-    { label: "Item 3", value: "3" },
-    { label: "Item 4", value: "4" },
-    { label: "Item 5", value: "5" },
-    { label: "Item 6", value: "6" },
-    { label: "Item 7", value: "7" },
-    { label: "Item 8", value: "8" },
-  ];
 
   return (
     <ModalWrapper>
@@ -253,7 +260,7 @@ const transactionModal = () => {
               }
             />
           </View>
-          
+
           {/* Description */}
 
           <View style={styles.inputContainer}>
@@ -264,11 +271,11 @@ const transactionModal = () => {
             <Input
               value={transaction.description}
               multiline
-              containerStyle={{ 
+              containerStyle={{
                 flexDirection: "row",
-                height: verticalScale(100), 
+                height: verticalScale(100),
                 alignItems: "flex-start",
-                paddingVertical:15
+                paddingVertical: 15,
               }}
               onChangeText={(value) =>
                 setTransaction({
@@ -279,10 +286,11 @@ const transactionModal = () => {
             />
           </View>
 
-          <View style={styles.inputContainer}>            <View style={styles.flexRow}>
+          <View style={styles.inputContainer}>
+            <View style={styles.flexRow}>
               <Typo color={colors.neutral200}>Receipt</Typo>
               <Typo color={colors.neutral500}>(optional)</Typo>
-            </View>            {/* image picker */}
+            </View>
             <ImageUpload
               file={transaction.image}
               onSelect={(file) =>
@@ -294,7 +302,6 @@ const transactionModal = () => {
           </View>
         </ScrollView>
       </View>
-
 
       <View style={styles.footer}>
         {oldTransaction?.id && !loading && (

@@ -36,7 +36,7 @@ const walletModal = () => {
         image:oldWallet?.image
       })
     }
-  })
+  },[])
 
   const onSubmit = async()=>{
     let {name,image} = wallet;
@@ -54,7 +54,6 @@ const walletModal = () => {
     const res = await createUpdateWallet(data);
     setLoading(false);
     if(res.success){
-      // updateUserData(user?.uid as string);
       router.back();
     }else{
       Alert.alert('Update Failed',res.msg)

@@ -67,7 +67,7 @@ const Wallet = () => {
             data={wallets}
             renderItem={({ item, index }) => {
               return (
-                <WalletListItem item={item} index={index} route={router} />
+                <WalletListItem item={item} index={index} router={router} />
               );
             }}
             contentContainerStyle={styles.listStyle}

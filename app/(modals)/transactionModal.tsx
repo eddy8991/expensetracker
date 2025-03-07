@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import ModalWrapper from "@/components/ModalWrapper";
 import Header from "@/components/Header";
@@ -30,7 +30,7 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import Input from "@/components/Input";
-import { createOrUpdateTransaction } from "@/services/transactionService";
+import { createOrUpdateTransaction, deleteTransaction } from "@/services/transactionService";
 
 const transactionModal = () => {
   const router = useRouter();
@@ -44,6 +44,7 @@ const transactionModal = () => {
     walletId: "",
     image: null,
   });
+
   const [loading, setLoading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -55,8 +56,20 @@ const transactionModal = () => {
     where("uid", "==", user?.uid),
     orderBy("created", "desc"),
   ]);
+  type paramType ={
+    id:string,
+    type:string,
+    amount:string,
+    category?:string,
+    date:string,
+    description?:string,
+    uid?:string,
+    walletId:string,
+    image?:string
 
-  const oldTransaction: { name: string; image: string; id: string } =
+  }
+
+  const oldTransaction: paramType =
     useLocalSearchParams();
 
   const onDateChange = (event: any, selectedDate: any) => {
@@ -64,6 +77,20 @@ const transactionModal = () => {
     setTransaction({ ...transaction, date: currentDate });
     setShowDatePicker(Platform.OS == "ios" ? true : false);
   };
+
+  useEffect(() => {
+    if(oldTransaction?.id) {
+      setTransaction({
+        type:oldTransaction?.type,
+        amount:Number(oldTransaction.amount),
+        description:oldTransaction.description || '',
+        category:oldTransaction.category || '',
+        date:new Date(oldTransaction.date),
+        walletId:oldTransaction.walletId,
+        image:oldTransaction?.image,
+      })
+    }
+  },[])
 
   const onSubmit = async () => {
     const { type, amount, description, category, date, walletId, image } =
@@ -73,16 +100,16 @@ const transactionModal = () => {
       return;
     }
     let transactionData: TransactionType = {
-      type,
+      type, 
       amount,
       description,
       category,
       date,
       walletId,
-      image,
+      image:image?image:null,
       uid: user?.uid,
     };
-    console.log('TRANSACTION DATA', transactionData);
+    if(oldTransaction?.id) transactionData.id = oldTransaction.id
     setLoading(true);
     const res = await createOrUpdateTransaction(transactionData);
     setLoading(false);
@@ -95,7 +122,7 @@ const transactionModal = () => {
   const onDelete = async () => {
     if (!oldTransaction?.id) return;
     setLoading(true);
-    const res = await deleteWallet(oldTransaction?.id);
+    const res = await deleteTransaction(oldTransaction?.id, oldTransaction.walletId);
     setLoading(false);
     if (res.success) {
       router.back();
@@ -107,7 +134,7 @@ const transactionModal = () => {
   const showDeleteAlert = () => {
     Alert.alert(
       "Confirm",
-      "Are you sure you want to delete this wallet?\nThis action cannot be undone and all transactions will be deleted",
+      "Are you sure you want to delete this transaction?",
       [
         {
           text: "Cancel",

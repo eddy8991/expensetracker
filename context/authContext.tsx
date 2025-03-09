@@ -1,6 +1,8 @@
 import { auth, firestore } from "@/config/firebase";
 import { AuthContextType, UserType } from "@/types";
 import { router } from "expo-router";
+import { useToast } from "./toastContext";
+import { useConfirmDialog } from "./confirmDialogContext";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -11,6 +13,8 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
+import { handleFirebaseError } from "@/utils/fireBaseErrorHandling";
+
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -20,10 +24,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<UserType>(null);
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
   const [initializing, setInitializing] = useState(true);
+  const { showToast } = useToast();
+  const { showConfirmDialog } = useConfirmDialog();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
+        const wasVerifiedBefore = user?.emailVerified;
+
         await firebaseUser.reload();
         const isVerified = firebaseUser.emailVerified;
         setIsEmailVerified(isVerified);
@@ -35,6 +43,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         });
         await updateUserData(firebaseUser.uid, isVerified);
         if (isVerified) {
+          if(wasVerifiedBefore === false && isVerified === true){
+            showToast('Email successfully Verified', 'success', 4000);
+          }
           router.replace("/(tabs)");
         } else {
           router.replace("/(auth)/verify");
@@ -64,12 +75,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       await userCredentials.user.reload();
 
       if (!userCredentials.user.emailVerified) {
+        showToast("Please verify your email", "warning", 4000);
         return {
           success: true,
           verified: false,
           msg: "Please verify your email",
         };
       }
+      showToast("Login successful", "success", 4000);
       return { success: true, verified: true };
     } catch (error: any) {
       let message = error.message;
@@ -80,8 +93,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const logout = () => {
+    showConfirmDialog({
+      title: "Logout",
+      message: "Are you sure you want to logout?",
+      onConfirm: async () => {
+        try {
+          await signOut(auth);
+          showToast("Logged out successfully", "success");
+        } catch (error) {
+          const errorResponse = handleFirebaseError(error);
+          showToast(errorResponse.message, "error");
+        }
+      }
+    });
+  };
+
   const signup = async (email: string, password: string, name: string) => {
-    // login logic here
     try {
       let response = await createUserWithEmailAndPassword(
         auth,
@@ -142,7 +170,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         return { success: true, verified: true };
       }
-
       return { success: true, verified: false };
     } catch (error: any) {
       return { success: false, msg: error.message, verified: false };
@@ -173,53 +200,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const formatFirebaseError = (error: any): string => {
-    const errorCode = error.code || '';
-    const errorMessage = error.message || 'An unknown error occurred';
-    
-    // Authentication error codes: https://firebase.google.com/docs/auth/admin/errors
-    switch (errorCode) {
-      // Login errors
-      case 'auth/invalid-email':
-        return 'The email address is not valid.';
-      case 'auth/invalid-credential':
-      case 'auth/invalid-credentials':
-      case 'auth/wrong-password':
-        return 'Invalid email or password.';
-      case 'auth/user-disabled':
-        return 'This account has been disabled.';
-      case 'auth/user-not-found':
-        return 'No account found with this email.';
-      case 'auth/too-many-requests':
-        return 'Too many unsuccessful login attempts. Please try again later.';
-      
-      // Signup errors
-      case 'auth/email-already-in-use':
-        return 'This email is already in use by another account.';
-      case 'auth/weak-password':
-        return 'Password is too weak. Please use at least 6 characters.';
-      
-      // Password reset errors
-      case 'auth/missing-email':
-        return 'Please enter an email address.';
-      
-      // General errors
-      case 'auth/network-request-failed':
-        return 'Network error. Please check your connection and try again.';
-      case 'auth/internal-error':
-        return 'An internal error has occurred. Please try again.';
-      
-      default:
-        // If it's a Firebase error that includes the error code in parentheses
-        if (errorMessage.includes('(auth/')) {
-          const match = errorMessage.match(/\(auth\/([^)]+)\)/);
-          if (match && match[1]) {
-            return `Authentication error (${match[1].replace(/-/g, ' ')})`;
-          }
-        }
-        return errorMessage;
-    }
-  };
+
 
   const updateUserData = async (uid: string, isVerified: boolean = false) => {
     try {
@@ -253,7 +234,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     login,
     signup,
     updateUserData,
-    logout: signOutAndRedirect,
+    logout,
+    signOutAndRedirect,
     isEmailVerified,
     resendVerificationEmail,
     checkEmailVerification,

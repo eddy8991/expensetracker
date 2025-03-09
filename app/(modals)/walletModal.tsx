@@ -1,27 +1,29 @@
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors, spacingX, spacingY } from '@/constants/theme'
 import ModalWrapper from '@/components/ModalWrapper'
 import Header from '@/components/Header'
 import { scale, verticalScale } from '@/utils/styling'
 import BackButon from '@/components/BackButon'
-import { Image } from 'expo-image'
-import { getProfileImage } from '@/services/ImageServices'
 import * as Icons  from 'phosphor-react-native'
 import Typo from '@/components/Typo'
 import Input from '@/components/Input'
 import {  WalletType } from '@/types'
 import Button from '@/components/Button'
 import { useAuth } from '@/context/authContext'
-import { updateUser } from '@/services/userService'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker';
 import ImageUpload from '@/components/ImageUpload'
 import { createUpdateWallet, deleteWallet } from '@/services/walletService'
+import { useToast } from '@/context/toastContext'
+import { useConfirmDialog } from '@/context/confirmDialogContext'
 
 const walletModal = () => {
   const router = useRouter();
-  const {user, updateUserData} =useAuth()
+  const {user} =useAuth()
+  const { showToast } = useToast();
+  const { showConfirmDialog } = useConfirmDialog();
+
   const [wallet, setwalet] = useState<WalletType>({
       name:'',
       image:null
@@ -29,6 +31,7 @@ const walletModal = () => {
   const [loading, setLoading] = useState(false)
 
   const oldWallet:{name:string,image:string, id:string} = useLocalSearchParams();
+  
   useEffect(() =>{
     if(oldWallet?.id){
       setwalet({
@@ -54,9 +57,10 @@ const walletModal = () => {
     const res = await createUpdateWallet(data);
     setLoading(false);
     if(res.success){
+      showToast(res.msg ||'Wallet Saved Successfully','success')
       router.back();
     }else{
-      Alert.alert('Update Failed',res.msg)
+      showToast(res.msg || 'Failed to save wallet','error')
     }
   }
   const onDelete = async()=>{
@@ -65,26 +69,27 @@ const walletModal = () => {
     const res = await deleteWallet(oldWallet?.id);
     setLoading(false);
     if(res.success){
+      showToast(res.msg || 'Wallet deleted successfully', 'success');
       router.back();
     }else{
-      Alert.alert('Delete Failed',res.msg)
+      showToast(res.msg || 'Failed to delete wallet', 'error');
     }
   }
 
-  const showDeleteAlert = ()=>{
-    Alert.alert('Confirm','Are you sure you want to delete this wallet?\nThis action cannot be undone and all transactions will be deleted',[
-      {
-        text:'Cancel',
-        onPress:()=> { console.log('cancel delete')},
-        style:'cancel'
-      },
-      {
-        text:'Delete',
-        style:'destructive',
-        onPress:onDelete
+  const showDeleteConfirmation = () => {
+    showConfirmDialog({
+      title: 'Delete Wallet',
+      message: `Are you sure you want to delete "${wallet.name}"? This action cannot be undone and all associated transactions will be deleted.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      type: 'danger',
+      onConfirm: onDelete,
+      onCancel: () => {
+        // Optional: Show feedback that deletion was cancelled
+        showToast('Wallet deletion cancelled', 'info');
       }
-    ])
-  }
+    });
+  };
   return (
     <ModalWrapper>
       <View style={styles.container}>
@@ -115,7 +120,7 @@ const walletModal = () => {
               backgroundColor:colors.rose,
               paddingHorizontal:spacingX._15,
             }}
-            onPress={showDeleteAlert}
+            onPress={showDeleteConfirmation}
           >
             <Icons.Trash
               color={colors.white}

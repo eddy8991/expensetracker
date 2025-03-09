@@ -2,6 +2,8 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Stack } from 'expo-router'
 import { AuthProvider } from '@/context/authContext'
+import { ToastProvider } from '@/context/toastContext'
+import { ConfirmDialogProvider } from '@/context/confirmDialogContext'
 
 const StackLayout = () => {
   return (
@@ -16,9 +18,13 @@ const StackLayout = () => {
 
 export default function RootLayout(){
   return(
-    <AuthProvider>
-      <StackLayout/>
-    </AuthProvider>
+    <ToastProvider>
+      <ConfirmDialogProvider>
+        <AuthProvider>
+          <StackLayout/>
+        </AuthProvider>
+      </ConfirmDialogProvider>
+    </ToastProvider>
   )
 }
 

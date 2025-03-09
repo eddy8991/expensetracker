@@ -31,12 +31,12 @@ const Welcome = () => {
             <Typo size={30} fontWeight={'800'}>Of Your Finances</Typo>
           </Animated.View>
           <View style={{alignItems:'center', gap:2}}>
-            <Typo size={17} color={colors.textLight}>Take Control</Typo>
-            <Typo size={17} color={colors.textLight}>Of Your Finances</Typo>
+            <Typo size={17} color={colors.textLight}>Grow your wealth</Typo>
+            <Typo size={17} color={colors.textLight}>one mindful choice at a time</Typo>
           </View>
           <View style={styles.buttonContainer}> 
-              <Button onPress={()=>router.push('/(auth)/signup')}>
-                <Typo size={18} fontWeight={'600'} color={colors.neutral900}>Get Started</Typo>
+              <Button onPress={()=>router.push('/(auth)/signup')} >
+                <Typo size={18} fontWeight={'600'} color={colors.black}>Get Started</Typo>
               </Button>
           </View>
         </View>

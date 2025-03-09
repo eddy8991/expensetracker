@@ -15,15 +15,11 @@ const login = () => {
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
   const { login, resendVerificationEmail } = useAuth();
 
   const handleSubmit = async () => {
-    setErrorMessage(null);
-
     if (!emailRef.current || !passwordRef.current) {
-      setErrorMessage("Please fill all fields");
       return;
     }
     setIsLoading(true);
@@ -54,9 +50,7 @@ const login = () => {
           ]
         );
       }
-    } else {
-      setErrorMessage(res.msg || "Failed to login");
-    }
+    } 
   };
 
   return (
@@ -69,20 +63,11 @@ const login = () => {
           </Typo>
         </View>
         <View style={styles.form}>
-          {errorMessage && (
-            <View style={styles.errorContainer}>
-              <Icons.Warning size={20} color={colors.rose} weight="fill" />
-              <Typo size={14} color={colors.rose} style={styles.errorText}>
-                {errorMessage}
-              </Typo>
-            </View>
-          )}
           <Input
             placeholder="Email"
-            onChangeText={(value) => {
-              emailRef.current = value;
-              if (errorMessage) setErrorMessage(null);
-            }}
+            onChangeText={(value) => 
+              emailRef.current = value
+            }
             icon={
               <Icons.At
                 size={verticalScale(20)}
@@ -94,10 +79,9 @@ const login = () => {
           <Input
             placeholder="Password"
             secureTextEntry
-            onChangeText={(value) => {
-              passwordRef.current = value;
-              if (errorMessage) setErrorMessage(null);
-            }}
+            onChangeText={(value) => 
+              passwordRef.current = value
+            }
             icon={
               <Icons.Lock
                 size={verticalScale(20)}

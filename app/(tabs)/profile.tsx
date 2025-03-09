@@ -17,32 +17,12 @@ import { useRouter } from 'expo-router'
 
 const Profile = () => {
 
-  const {user} = useAuth();
+  const {user, logout} = useAuth();
   const router = useRouter();
-
-
-  const handleLogOut = async () =>{
-    await signOut(auth);
-  }
-
-  const showLogoutAlert = () => {
-    Alert.alert('Logout', 'Are you sure you want to logout?', [
-      {
-        text:'cancel',
-        onPress:() => console.log('cancel logout'),
-        style:'cancel'
-      },
-      {
-        text:'Yes',
-        onPress:() => handleLogOut(),
-        style:'destructive'
-      }
-    ])
-  }
   
   const handlePress = (item:accountOptionType) =>{
     if(item.title == 'Logout'){
-      showLogoutAlert();
+      logout();
     }
     if(item.routeName){  
       router.push(item.routeName);

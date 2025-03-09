@@ -1,7 +1,9 @@
+import { ErrorResponse } from './../utils/fireBaseErrorHandling';
 import { ResponseType, WalletType } from "@/types";
 import { uploadToCloudinary } from "./ImageServices";
 import { firestore } from "@/config/firebase";
 import { doc, collection, setDoc, deleteDoc } from "firebase/firestore";
+import { handleFirebaseError } from "@/utils/fireBaseErrorHandling";
 
 export const createUpdateWallet = async (
   walletData: Partial<WalletType>
@@ -32,12 +34,18 @@ export const createUpdateWallet = async (
       : doc(collection(firestore, "wallets"));
 
     await setDoc(walletRef, walletToSave, { merge: true });
+
+    const successMsg = walletData?.id
+    ? `wallet ${walletData?.name} updated successfully`
+    : `wallet ${walletData?.name} created successfully`;
+
     return {
       success: true,
       data: { ...walletToSave, id: walletRef.id },
-      msg: "Wallet updated successfully",
+      msg: successMsg,
     };
   } catch (error: any) {
+    const errorResponse = handleFirebaseError(error);
     return { success: false, msg: error.message };
   }
 };
@@ -48,6 +56,7 @@ export const deleteWallet = async (walletId: string): Promise<ResponseType> => {
     await deleteDoc(walletref);
     return { success: true, msg: "Wallet deleted successfully" };
   } catch (error: any) {
-    return { success: false, msg: error.message };
+    const errorResponse = handleFirebaseError(error);
+    return { success: false, msg: errorResponse.message };
   }
 };

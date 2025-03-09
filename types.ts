@@ -153,7 +153,8 @@ export type AuthContextType = {
     password: string,
     name: string
   ) => Promise<{ success: boolean; msg?: string }>;
-  logout: () => Promise<{ success: boolean; msg?: string }>;
+  logout: () => void;
+  signOutAndRedirect: () => Promise<{ success: boolean; msg?: string }>;
   sendPasswordReset: (email: string) => Promise<{
     success: boolean;
     msg?: string;

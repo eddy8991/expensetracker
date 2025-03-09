@@ -115,7 +115,7 @@ const transactionModal = () => {
     const res = await createOrUpdateTransaction(transactionData);
     setLoading(false);
     if (res.success) {
-      showToast(res.msg||'Transaction updated successfully', 'success')
+      showToast(res.msg || (oldTransaction?.id ? 'Transaction updated successfully' : 'Transaction created successfully'), 'success')
       router.back();
     } else {
       showToast(res.msg || 'Failed to update transaction', 'error')

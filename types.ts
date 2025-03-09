@@ -133,6 +133,7 @@ export type UserType = {
   email?: string | null;
   name: string | null;
   image?: any;
+  emailVerified?: boolean;
 } | null;
 
 export type UserDataType = {
@@ -146,13 +147,21 @@ export type AuthContextType = {
   login: (
     email: string,
     password: string
-  ) => Promise<{ success: boolean; msg?: string }>;
+  ) => Promise<{ success: boolean; verified?: boolean; msg?: string }>;
   signup: (
     email: string,
     password: string,
     name: string
   ) => Promise<{ success: boolean; msg?: string }>;
-  updateUserData: (userId: string) => Promise<void>;
+  logout: () => Promise<{ success: boolean; msg?: string }>;
+  sendPasswordReset: (email: string) => Promise<{
+    success: boolean;
+    msg?: string;
+  }>;
+  updateUserData: (userID: string) => Promise<void>;
+  isEmailVerified: boolean;
+  resendVerificationEmail: () => Promise<{ success: boolean; msg?: string }>;
+  checkEmailVerification: () => Promise<{ success: boolean; verified: boolean; msg?: string }>;
 };
 
 export type ResponseType = {

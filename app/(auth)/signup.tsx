@@ -1,4 +1,4 @@
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Alert, Pressable, StyleSheet, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import ScreenWrapper from '@/components/ScreenWrapper'
 import { verticalScale } from '@/utils/styling'
@@ -19,6 +19,7 @@ const Signup = () => {
   const nameref = useRef("")
 
   const [isLoading, setIsLoading] = useState(false)
+
   const router = useRouter()
   const {signup} = useAuth()
 
@@ -34,6 +35,13 @@ const Signup = () => {
       nameref.current
     )
     setIsLoading(false)
+
+    if (res.success) {
+      Alert.alert('Success', res.msg || 'Sign up successful! Please verify your email.')
+      // User will be automatically redirected to verify-email screen by the auth state listener
+    } else {
+      Alert.alert('Error', res.msg || 'Failed to sign up')
+    }
 
   }
 

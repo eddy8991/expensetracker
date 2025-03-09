@@ -191,3 +191,78 @@ export const walletConfirmations = {
     );
   }
 };
+
+
+export type TransactionErrorResponse = {
+  success: boolean;
+  msg: string;
+  code?: string;
+};
+
+// Handle transaction-specific errors
+export const handleTransactionError = (
+  error: unknown, 
+  operation: 'create' | 'update' | 'delete'
+): TransactionErrorResponse => {
+  const baseError = handleFirebaseError(error);
+  
+  // Add context based on the operation type
+  switch (operation) {
+    case 'create':
+      return {
+        success: false,
+        msg: `Failed to add transaction: ${baseError.message}`,
+        code: baseError.code
+      };
+    case 'update':
+      return {
+        success: false,
+        msg: `Failed to update transaction: ${baseError.message}`,
+        code: baseError.code
+      };
+    case 'delete':
+      return {
+        success: false,
+        msg: `Failed to delete transaction: ${baseError.message}`,
+        code: baseError.code
+      };
+    default:
+      return {
+        success: false,
+        msg: baseError.message,
+        code: baseError.code
+      };
+  }
+};
+
+// Create confirmation dialog config for transaction operations
+export const transactionConfirmations = {
+  delete: (onConfirm: () => void, onCancel?: () => void) => {
+    return confirmAction(
+      'Delete Transaction',
+      'Are you sure you want to delete this transaction? This action cannot be undone.',
+      onConfirm,
+      onCancel,
+      'Delete',
+      'Cancel',
+      'danger'
+    );
+  }
+};
+
+// Create success response for transaction operations
+export const transactionSuccess = (
+  operation: 'create' | 'update' | 'delete',
+  transactionType: string = 'expense'
+): TransactionErrorResponse => {
+  const actionText = operation === 'create' 
+    ? 'added' 
+    : operation === 'update' 
+      ? 'updated' 
+      : 'deleted';
+  
+  return {
+    success: true,
+    msg: `${transactionType.charAt(0).toUpperCase() + transactionType.slice(1)} transaction ${actionText} successfully`
+  };
+};

@@ -1,4 +1,4 @@
-import { ErrorResponse } from './../utils/fireBaseErrorHandling';
+
 import { ResponseType, WalletType } from "@/types";
 import { uploadToCloudinary } from "./ImageServices";
 import { firestore } from "@/config/firebase";

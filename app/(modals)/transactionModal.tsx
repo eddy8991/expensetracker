@@ -4,7 +4,6 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Touchable,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -22,19 +21,21 @@ import Button from "@/components/Button";
 import { useAuth } from "@/context/authContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ImageUpload from "@/components/ImageUpload";
-import { deleteWallet } from "@/services/walletService";
 import { expenseCategories, transactionTypes } from "@/constants/data";
 import useFetchData from "@/hooks/useFetchData";
 import { orderBy, where } from "firebase/firestore";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import Input from "@/components/Input";
 import { createOrUpdateTransaction, deleteTransaction } from "@/services/transactionService";
+import { useToast } from "@/context/toastContext";
+import { useConfirmDialog } from "@/context/confirmDialogContext";
+import { transactionConfirmations } from "@/utils/fireBaseErrorHandling";
 
 const transactionModal = () => {
   const router = useRouter();
   const { user } = useAuth();
+  const { showToast } = useToast();
+  const { showConfirmDialog } = useConfirmDialog();
 
   const [transaction, setTransaction] = useState<TransactionType>({
     type: "expense",
@@ -114,9 +115,10 @@ const transactionModal = () => {
     const res = await createOrUpdateTransaction(transactionData);
     setLoading(false);
     if (res.success) {
+      showToast(res.msg||'Transaction updated successfully', 'success')
       router.back();
     } else {
-      Alert.alert("Update Failed", res.msg);
+      showToast(res.msg || 'Failed to update transaction', 'error')
     }
   };
   const onDelete = async () => {
@@ -125,32 +127,17 @@ const transactionModal = () => {
     const res = await deleteTransaction(oldTransaction?.id, oldTransaction.walletId);
     setLoading(false);
     if (res.success) {
+      showToast(res.msg||'Transaction deleted successfully', 'success')
       router.back();
     } else {
-      Alert.alert("Delete Failed", res.msg);
+      showToast(res.msg || 'Failed to delete transaction', 'error')
     }
   };
 
-  const showDeleteAlert = () => {
-    Alert.alert(
-      "Confirm",
-      "Are you sure you want to delete this transaction?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => {
-            console.log("cancel delete");
-          },
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => onDelete(),
-        },
-      ]
-    );
-  };
+const confirmDelete = () => {
+  const deleteConfig = transactionConfirmations.delete(onDelete);
+  showConfirmDialog(deleteConfig);
+}
 
   return (
     <ModalWrapper>
@@ -337,7 +324,7 @@ const transactionModal = () => {
               backgroundColor: colors.rose,
               paddingHorizontal: spacingX._15,
             }}
-            onPress={showDeleteAlert}
+            onPress={confirmDelete}
           >
             <Icons.Trash
               color={colors.white}

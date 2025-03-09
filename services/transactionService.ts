@@ -9,7 +9,6 @@ import {
   getDocs,
   orderBy,
   query,
-  QuerySnapshot,
   setDoc,
   Timestamp,
   updateDoc,
@@ -19,8 +18,7 @@ import { uploadToCloudinary } from "./ImageServices";
 import { getLast12Months, getLast7Days, getYearsRange } from "@/utils/common";
 import { scale } from "@/utils/styling";
 import { colors } from "@/constants/theme";
-import { useToast } from "@/context/toastContext";
-import { useConfirmDialog } from "@/context/confirmDialogContext";
+import { handleFirebaseError } from "@/utils/fireBaseErrorHandling";
 
 export const createOrUpdateTransaction = async (
   transactionData: Partial<TransactionType>

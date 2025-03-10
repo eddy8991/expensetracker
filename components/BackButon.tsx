@@ -1,10 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { BackButtonProps } from '@/types'
+import { BackButtonProps } from '../types'
 import { useRouter } from 'expo-router'
 import { CaretLeft } from 'phosphor-react-native'
-import { verticalScale } from '@/utils/styling'
-import { colors, radius } from '@/constants/theme'
+import { verticalScale } from '../utils/styling'
+import { colors, radius } from '../constants/theme'
 
 const BackButon = ({
   style,

@@ -5,17 +5,17 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-import { colors, spacingY } from "@/constants/theme";
-import ModalWrapper from "@/components/ModalWrapper";
-import Header from "@/components/Header";
-import BackButon from "@/components/BackButon";
-import Input from "@/components/Input";
-import { TransactionType,} from "@/types";
-import { useAuth } from "@/context/authContext";
+import { colors, spacingY } from "../../constants/theme";
+import ModalWrapper from "../../components/ModalWrapper";
+import Header from "../../components/Header";
+import BackButon from "../../components/BackButon";
+import Input from "../../components/Input";
+import { TransactionType,} from "../../types";
+import { useAuth } from "../../context/authContext";
 import { useRouter } from "expo-router";
 import { limit, orderBy, where } from "firebase/firestore";
-import useFetchData from "@/hooks/useFetchData";
-import TransactionList from "@/components/TransactionList";
+import useFetchData from "../../hooks/useFetchData";
+import TransactionList from "../../components/TransactionList";
 
 const SearchModal = () => {
   const router = useRouter();

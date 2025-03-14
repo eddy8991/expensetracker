@@ -10,6 +10,7 @@ import { spacingY, colors, spacingX } from "@/constants/theme";
 import { useAuth } from "@/context/authContext";
 import { verticalScale } from "@/utils/styling";
 import Button from "@/components/Button";
+import { useToast } from "@/context/toastContext";
 
 
 const login = () => {
@@ -18,9 +19,11 @@ const login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { login, resendVerificationEmail } = useAuth();
+  const { showToast } = useToast();
 
   const handleSubmit = async () => {
     if (!emailRef.current || !passwordRef.current) {
+      showToast("Please enter both email and password", "error");
       return;
     }
     setIsLoading(true);
@@ -38,12 +41,9 @@ const login = () => {
               onPress: async () => {
                 const resendRes = await resendVerificationEmail();
                 if (resendRes.success) {
-                  Alert.alert("Success", "Verification email sent");
+                  showToast("Verification email sent", "success");
                 } else {
-                  Alert.alert(
-                    "Error",
-                    resendRes.msg || "Failed to send verification email"
-                  );
+                  showToast(resendRes.msg || "Failed to send verification email", "error");
                 }
               },
             },
@@ -51,7 +51,9 @@ const login = () => {
           ]
         );
       }
-    } 
+    } else {
+      showToast(res.msg || "Login Failed", "error");
+    }
   };
 
   return (

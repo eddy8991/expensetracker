@@ -10,6 +10,7 @@ import { verticalScale } from '@/utils/styling'
 import { useRouter } from 'expo-router'
 import * as Icons from "phosphor-react-native";
 import Button from '@/components/Button'
+import { useToast } from '@/context/toastContext'
 
 
 
@@ -18,6 +19,7 @@ const Signup = () => {
   const emailRef = useRef("")
   const passwordRef = useRef("")
   const nameref = useRef("")
+  const { showToast } = useToast()
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -26,9 +28,15 @@ const Signup = () => {
 
   const handleSubmit = async() => {
     if(!emailRef.current || !passwordRef.current){
-      Alert.alert('Please fill all fields')
+      showToast("Please fill all the fields",'error',4000 )
       return
     }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if(!emailRegex.test(emailRef.current)) {
+      showToast("Please enter a valid email address", "error", 4000)
+      return
+    }
+    
     setIsLoading(true)
     const res = await signup(
       emailRef.current, 
@@ -38,10 +46,10 @@ const Signup = () => {
     setIsLoading(false)
 
     if (res.success) {
-      Alert.alert('Success', res.msg || 'Sign up successful! Please verify your email.')
+      showToast("Sign up successfull.  verification email has been sent to your email", 'success', 4000)
       // User will be automatically redirected to verify-email screen by the auth state listener
     } else {
-      Alert.alert('Error', res.msg || 'Failed to sign up')
+      showToast(res.msg || 'Failed to sign up','error', 4000)
     }
 
   }

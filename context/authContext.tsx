@@ -85,11 +85,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       showToast("Login successful", "success", 4000);
       return { success: true, verified: true };
     } catch (error: any) {
-      let message = error.message;
-      console.log("error message", message);
-      if (message.includes("(auth/invalid-credentials)"))
-        message = "Invalid credentials";
-      return { success: false, msg: message };
+      const errorResponse = handleFirebaseError(error);
+      return { success: false, msg: errorResponse.message };
     }
   };
 
@@ -130,8 +127,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         msg: "Verification email sent. Please check your inbox",
       };
     } catch (error: any) {
-      let message = error.message;
-      return { success: false, msg: message };
+      let errorMessage = handleFirebaseError(error);
+      return { success: false, msg: errorMessage.message };
     }
   };
 

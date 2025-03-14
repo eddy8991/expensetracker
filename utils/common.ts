@@ -67,3 +67,18 @@ export const getYearsRange = (startYear: number, endYear: number): any => {
   // return result;
   return result.reverse();
 };
+
+
+
+
+
+
+// "firebaseApiKey": "AIzaSyB6DPrkMCuuU2om_jDGuovSuWb1ddCfxtk",
+// "firebaseAuthDomain": "expensetracker-3ab7c.firebaseapp.com",
+// "firebaseProjectId": "expensetracker-3ab7c",
+// "firebaseStorageBucket": "expensetracker-3ab7c.firebasestorage.app",
+// "firebaseMessagingSenderId": "717595371091",
+// "firebaseAppId": "1:717595371091:web:7e3e73304dfdc069ae48a6",
+// "firebaseMeasurementId": "G-DR7YSMFD17",
+// "cloudinaryCloudName": "dcacejyme",
+// "cloudinaryUploadPreset": "images",

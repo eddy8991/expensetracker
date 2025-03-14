@@ -1,12 +1,12 @@
-import {  StyleSheet,TouchableOpacity, View } from 'react-native'
+import { StyleSheet,TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import ScreenWrapper from '../../components/ScreenWrapper'
-import Typo from '../../components/Typo'
 import { colors, spacingX, spacingY } from '@/constants/theme'
-import { verticalScale } from '../../utils/styling'
-import Button from '../../components/Button'
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated'
 import { useRouter } from 'expo-router'
+import ScreenWrapper from '@/components/ScreenWrapper'
+import Typo from '@/components/Typo'
+import { verticalScale } from '@/utils/styling'
+import Button from '@/components/Button'
 
 const Welcome = () => {
   const router = useRouter()

@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import ScreenWrapper from '@/components/ScreenWrapper'
 import { colors, radius, spacingX, spacingY } from '@/constants/theme'
@@ -11,8 +11,6 @@ import { getProfileImage } from '@/services/ImageServices'
 import { accountOptionType } from '@/types'
 import * as Icons from 'phosphor-react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
-import { signOut } from 'firebase/auth'
-import { auth } from '@/config/firebase'
 import { useRouter } from 'expo-router'
 
 const Profile = () => {

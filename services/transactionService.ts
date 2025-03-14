@@ -18,7 +18,7 @@ import { uploadToCloudinary } from "./ImageServices";
 import { getLast12Months, getLast7Days, getYearsRange } from "@/utils/common";
 import { scale } from "@/utils/styling";
 import { colors } from "@/constants/theme";
-import { handleFirebaseError } from "@/utils/fireBaseErrorHandling";
+
 
 export const createOrUpdateTransaction = async (
   transactionData: Partial<TransactionType>

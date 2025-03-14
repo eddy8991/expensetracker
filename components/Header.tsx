@@ -3,6 +3,7 @@ import React from 'react'
 import { HeaderProps } from '@/types'
 import Typo from './Typo'
 
+
 const Header = ({title="", leftIcon, style}:HeaderProps) => {
   return (
     <View style={[styles.container, style]}>

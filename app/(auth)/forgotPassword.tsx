@@ -1,15 +1,15 @@
 import { Alert, StyleSheet, View } from 'react-native'
 import React, { useRef, useState } from 'react'
-import ScreenWrapper from '../../components/ScreenWrapper'
-import { verticalScale } from '../../utils/styling'
-import { colors, spacingX, spacingY } from '../../constants/theme'
-import BackButon from '../../components/BackButon'
-import Typo from '../../components/Typo'
-import Input from '../../components/Input'
+import ScreenWrapper from '@/components/ScreenWrapper'
+import { verticalScale } from '@/utils/styling'
+import { colors, spacingX, spacingY } from '@/constants/theme'
+import BackButon from '@/components/BackButon'
+import Typo from '@/components/Typo'
+import Input from '@/components/Input'
 import * as Icons from 'phosphor-react-native'
-import Button from '../../components/Button'
+import Button from '@/components/Button'
 import { useRouter } from 'expo-router'
-import { useAuth } from '../../context/authContext'
+import { useAuth } from '@/context/authContext'
 
 const ForgotPassword = () => {
   const emailRef = useRef("")

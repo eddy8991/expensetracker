@@ -1,13 +1,13 @@
 import { Alert, StyleSheet, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import ScreenWrapper from "../../components/ScreenWrapper";
-import { verticalScale } from "../../utils/styling";
-import { colors, spacingX, spacingY } from "../../constants/theme";
-import Typo from "../../components/Typo";
-import Button from "../../components/Button";
-import { useAuth } from "../../context/authContext";
 import * as Icons from "phosphor-react-native";
 import { useRouter } from "expo-router";
+import ScreenWrapper from "@/components/ScreenWrapper";
+import Typo from "@/components/Typo";
+import { colors, spacingY, spacingX } from "@/constants/theme";
+import { useAuth } from "@/context/authContext";
+import { verticalScale } from "@/utils/styling";
+import Button from "@/components/Button";
 
 const VerifyEmail = () => {
   const [isLoading, setIsLoading] = useState(false);

@@ -40,12 +40,14 @@
       "typedRoutes": true
     },
     "extra": {
+
       "router": {
         "origin": false
       },
       "eas": {
         "projectId": "7412a682-3dd7-41d4-8264-2944c9ca27d9"
       }
-    }
+    },
+    "owner": "eddy_km"
   }
 }
